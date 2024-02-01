@@ -81,7 +81,6 @@ pipeline{
                 sh "docker run -d --name hotstar -p 3000:3000 sreedhar8897/hotstar:latest"
             }
         }
-        stages {
         stage('Deploy to kubernets'){
             environment {
                 AWS_ACCESS_KEY_ID=credentials('access-key')
@@ -99,5 +98,4 @@ pipeline{
             }
         }
     }
-}
 }
