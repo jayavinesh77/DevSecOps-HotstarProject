@@ -81,17 +81,23 @@ pipeline{
                 sh "docker run -d --name hotstar -p 3000:3000 sreedhar8897/hotstar:latest"
             }
         }
+        stages {
         stage('Deploy to kubernets'){
+            environment {
+                AWS_ACCESS_KEY_ID=credentials('access-key')
+                AWS_SECRET_ACCESS_KEY=credentials('secret-key')
+            }
             steps{
                 script{
                     dir('K8S') {
-                        withKubeConfig(caCertificate: '', clusterName: '', contextName: '', credentialsId: 'k8s', namespace: '', restrictKubeConfigAccess: false, serverUrl: '') {
-                                sh 'kubectl apply -f deployment.yml'
-                                sh 'kubectl apply -f service.yml'
-                        }
+                     withKubeConfig(credentialsId: 'shek-config') {
+                    sh 'kubectl apply -f deployment.yml --validate=false'
+                    sh 'kubectl apply -f service.yml --validate=false'
+                }
                     }
                 }
             }
         }
     }
 }
+
