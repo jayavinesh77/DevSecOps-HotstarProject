@@ -1,23 +1,23 @@
 resource "aws_vpc" "vpc" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block = "10.1.0.0/16"
 
   tags = {
-    Name = var.vpc-name
+    Name = my vpc-01
   }
 }
 
 resource "aws_internet_gateway" "igw" {
-  vpc_id = aws_vpc.vpc.id
+  vpc_id = vpc-0ee43c446833980b4
 
   tags = {
-    Name = var.igw-name
+    Name = vpc-pub-igw
   }
 }
 
 resource "aws_subnet" "public-subnet" {
-  vpc_id                  = aws_vpc.vpc.id
-  cidr_block              = "10.0.1.0/24"
-  availability_zone       = "us-east-1a"
+  vpc_id                  = vpc-0ee43c446833980b4
+  cidr_block              = "10.1.0.0/20"
+  availability_zone       = "ap-south-1"
   map_public_ip_on_launch = true
 
   tags = {
@@ -26,28 +26,28 @@ resource "aws_subnet" "public-subnet" {
 }
 
 resource "aws_route_table" "rt" {
-  vpc_id = aws_vpc.vpc.id
+  vpc_id = vpc-0ee43c446833980b4
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.igw.id
+    gateway_id = igw-0e7a802eb673b5376
   }
 
   tags = {
-    Name = var.rt-name
+    Name = rou-pub-01
   }
 }
 
 resource "aws_route_table_association" "rt-association" {
-  route_table_id = aws_route_table.rt.id
-  subnet_id      = aws_subnet.public-subnet.id
+  route_table_id = rtb-0a33595c0c10bb2bc
+  subnet_id      = subnet-0759bbcc5a0e189a4
 }
 
 resource "aws_security_group" "security-group" {
-  vpc_id      = aws_vpc.vpc.id
+  vpc_id      = vpc-0ee43c446833980b4
   description = "Allowing Jenkins, Sonarqube, SSH Access"
 
   ingress = [
-    for port in [22, 8080, 9000] : {
+    for port in [22, 8080, 9000, 65535] : {
       description      = "TLS from VPC"
       from_port        = port
       to_port          = port
@@ -68,6 +68,6 @@ resource "aws_security_group" "security-group" {
   }
 
   tags = {
-    Name = var.sg-name
+    Name = launch-wizard-6
   }
 }

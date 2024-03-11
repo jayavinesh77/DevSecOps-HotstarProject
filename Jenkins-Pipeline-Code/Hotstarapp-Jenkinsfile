@@ -15,7 +15,7 @@ pipeline{
         }
         stage('Checkout from Git'){
             steps{
-                git branch: 'main', url: 'https://github.com/uniquesreedhar/DevSecOps-HotstarProject.git'
+                git branch: 'main', url: 'https://github.com/jayavinesh77/DevSecOps-HotstarProject.git'
             }
         }
         stage("Sonarqube Analysis "){
@@ -59,8 +59,8 @@ pipeline{
                 script{
                    withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){
                        sh "docker build -t hotstar ."
-                       sh "docker tag hotstar sreedhar8897/hotstar:latest "
-                       sh "docker push sreedhar8897/hotstar:latest"
+                       sh "docker tag hotstar jayavinesh/hotstar:latest "
+                       sh "docker push jayavinesh/hotstar:latest"
                     }
                 }
             }
@@ -69,16 +69,16 @@ pipeline{
             steps {
                 script{
                    withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){
-                       sh 'docker-scout quickview sreedhar8897/hotstar:latest'
-                       sh 'docker-scout cves sreedhar8897/hotstar:latest'
-                       sh 'docker-scout recommendations sreedhar8897/hotstar:latest'
+                       sh 'docker-scout quickview jayavinesh/hotstar:latest'
+                       sh 'docker-scout cves jayavinesh/hotstar:latest'
+                       sh 'docker-scout recommendations jayavinesh/hotstar:latest'
                    }
                 }
             }
         }
         stage("deploy_docker"){
             steps{
-                sh "docker run -d --name hotstar -p 3000:3000 sreedhar8897/hotstar:latest"
+                sh "docker run -d --name hotstar -p 3000:3000 jayavinesh97/hotstar:latest"
             }
         }
         stage('Deploy to kubernets'){

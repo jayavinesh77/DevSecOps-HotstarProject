@@ -1,55 +1,55 @@
 data "aws_vpc" "vpc" {
   filter {
     name   = "tag:Name"
-    values = [var.vpc-name]
+    values = [my vpc-01]
   }
 }
 
 data "aws_internet_gateway" "igw" {
   filter {
     name   = "tag:Name"
-    values = [var.igw-name]
+    values = [vpc-pub-iwg]
   }
 }
 
 data "aws_subnet" "subnet" {
   filter {
     name   = "tag:Name"
-    values = [var.subnet-name]
+    values = [pub-sub-02]
   }
 }
 
 data "aws_security_group" "sg-default" {
   filter {
     name   = "tag:Name"
-    values = [var.security-group-name]
+    values = [launch-wizard-6]
   }
 }
 
-resource "aws_subnet" "public-subnet2" {
-  vpc_id                  = data.aws_vpc.vpc.id
-  cidr_block              = "10.0.2.0/24"
-  availability_zone       = "us-east-1b"
+resource "aws_subnet" "pub-sub-02" {
+  vpc_id                  = vpc-0ee43c446833980b4
+  cidr_block              = "10.1.16.0/20"
+  availability_zone       = "ap-south-1a"
   map_public_ip_on_launch = true
 
   tags = {
-    Name = var.subnet-name2
+    Name = pub-sub-02
   }
 }
 
-resource "aws_route_table" "rt2" {
-  vpc_id = data.aws_vpc.vpc.id
+resource "aws_route_table" "rtb" {
+  vpc_id = vpc-0ee43c446833980b4
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = data.aws_internet_gateway.igw.id
+    gateway_id = igw-0e7a802eb673b5376
   }
 
   tags = {
-    Name = var.rt-name2
+    Name = rou-pub-01
   }
 }
 
 resource "aws_route_table_association" "rt-association2" {
-  route_table_id = aws_route_table.rt2.id
-  subnet_id      = aws_subnet.public-subnet2.id
+  route_table_id = rtb-0a33595c0c10bb2bc
+  subnet_id      = subnet-0f9bf78308d866397
 }
