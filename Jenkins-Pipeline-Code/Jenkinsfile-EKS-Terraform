@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('Checkout from Git') {
             steps {
-                git branch: 'main', url: 'https://github.com/jayavinesh77/DevSecOps-HotstarProject.git'
+                git branch: 'main', url: 'https://github.com/jayavinesh77/hotstar-clone'
             }
         }
         stage('Initializing Terraform') {
